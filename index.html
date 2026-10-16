@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0d9488">
+<meta name="description" content="个人健康记录 · 本地优先 · 支持多设备同步">
+<!--
+  PWA 相关引用说明：
+  - manifest 的 <link> 由 vite-plugin-pwa 在构建时自动注入（会自动带上 base 前缀）
+  - 其他静态资源必须写成 /health-record/xxx，由 Vite 替换成带 base 的绝对路径。
+    ⚠️ 不要写成 ./xxx：部署到 GitHub Pages 的 /仓库名/ 子路径时，
+    相对路径会被解析到根路径而 404。这个坑已由 tools/e2e-subpath.js 守住。
+-->
+<link rel="icon" type="image/svg+xml" href="/health-record/icon.svg">
+<link rel="apple-touch-icon" href="/health-record/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="健康记录">
+<title>健康记录</title>
+  <script type="module" crossorigin src="/health-record/assets/index-CaECwINh.js"></script>
+  <link rel="stylesheet" crossorigin href="/health-record/assets/index-y-nzOch4.css">
+<link rel="manifest" href="/health-record/manifest.webmanifest"></head>
+<body>
+<div class="phone">
+
+  <header class="topbar">
+    <div class="brand"><span>🫀</span><span>健康记录</span></div>
+    <button class="icon-btn" id="btnTheme" title="主题">🌓</button>
+    <button class="icon-btn" id="btnSettings" title="设置">⚙️</button>
+  </header>
+
+  <main>
+    <!-- ==================== 页面：主页 ==================== -->
+    <section id="pg-home">
+      <!-- 日期条（按决策不做天气） -->
+      <div class="card" id="dayBar" style="display:flex;align-items:center;gap:12px;padding:12px 14px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:16px;font-weight:700" id="dateTitle">—</div>
+          <div style="font-size:11.5px;color:var(--text3);margin-top:3px" id="dateSub">—</div>
+        </div>
+      </div>
+
+      <!-- 首屏概览：饮水环 + 运动/睡眠/体重 -->
+      <div class="hero">
+        <div class="hero-ring">
+          <div class="ring-wrap">
+            <svg width="82" height="82" viewBox="0 0 82 82">
+              <circle cx="41" cy="41" r="34" fill="none" stroke="var(--card2)" stroke-width="9"/>
+              <circle id="ringArc" cx="41" cy="41" r="34" fill="none" stroke="var(--water)" stroke-width="9"
+                      stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="213.6"
+                      style="transition:stroke-dashoffset .5s ease"/>
+            </svg>
+            <div class="ring-txt"><b id="ringVal">0</b><span id="ringUnit">/ 2000 ml</span></div>
+          </div>
+          <div style="font-size:11px;color:var(--text3)">饮水 · 今日</div>
+        </div>
+        <div class="hero-side">
+          <div class="mini">
+            <div class="mini-ico" style="background:var(--steps-soft)">🚶</div>
+            <div class="mini-body">
+              <div class="mini-label">运动 · 步数</div>
+              <div class="mini-val" id="mvSteps">0 <small>/ 8000 步</small></div>
+              <div class="bar"><i id="barSteps" style="width:0;background:var(--steps)"></i></div>
+            </div>
+          </div>
+          <div class="mini">
+            <div class="mini-ico" style="background:var(--sleep-soft)">😴</div>
+            <div class="mini-body">
+              <div class="mini-label">睡眠 · 昨晚 / 今日</div>
+              <div class="mini-val" id="mvSleep">— <small>/ 8 小时</small></div>
+              <div class="bar"><i id="barSleep" style="width:0;background:var(--sleep)"></i></div>
+            </div>
+          </div>
+          <div class="mini">
+            <div class="mini-ico" style="background:var(--brand-soft)">⚖️</div>
+            <div class="mini-body">
+              <div class="mini-label">体重 · 今日</div>
+              <div class="mini-val" id="mvWeight">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 快捷饮水按钮 -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">💧 一键记录饮水</div>
+          <div class="card-sub">点一下直接累计</div>
+        </div>
+        <div class="quick" id="quickBtns"></div>
+        <div class="hint">在「设置 → 快捷按钮」可增删、改名、改容量、排序</div>
+      </div>
+
+      <!-- 今日时间轴 -->
+      <div class="sec-label" style="display:flex;align-items:center">
+        <span>今日记录</span>
+        <span style="margin-left:auto;font-weight:500" id="tlCount"></span>
+      </div>
+      <div class="tl" id="timeline"></div>
+    </section>
+
+    <!-- ==================== 页面：总结 ==================== -->
+    <section id="pg-summary" class="hide">
+      <div class="seg" id="sumSeg">
+        <button data-scope="day" class="on">日总结</button>
+        <button data-scope="week">周</button>
+        <button data-scope="month">月</button>
+      </div>
+
+      <!-- 日总结 -->
+      <div id="sumDay">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">📝 标准格式总结</div>
+            <div class="card-sub" id="sumDayLabel"></div>
+          </div>
+          <pre class="sum-out" id="sumText"></pre>
+          <div class="row" style="margin-top:12px;gap:9px">
+            <button class="btn-sm" id="btnCopySum" style="padding:11px;flex:1">📋 复制总结</button>
+            <button class="btn-sm" id="btnShareSum" style="padding:11px;flex:1">📤 分享 / 备注</button>
+          </div>
+        </div>
+
+                <div class="card">
+          <div class="card-head"><div class="card-title">🎯 目标达成</div><div class="card-sub">改目标只影响今天及以后</div></div>
+          <div id="sumGoals"></div>
+        </div>
+
+<div class="type-tabs" id="chartTabs">
+          <button class="ttab on" data-chart="water">饮水</button>
+          <button class="ttab" data-chart="steps">步数</button>
+          <button class="ttab" data-chart="sleep">睡眠</button>
+          <button class="ttab" data-chart="weight">体重</button>
+          <button class="ttab" data-chart="kcal">饮食</button>
+        </div>
+        <div class="card" style="margin-top:10px">
+          <div class="card-head">
+            <div class="card-title" id="chartTitle">近 7 天饮水</div>
+            <div class="card-sub">柱状 · 虚线为目标</div>
+          </div>
+          <canvas id="chart" height="360" style="width:100%;height:180px"></canvas>
+        </div>
+
+        <div class="sec-label">当日统计</div>
+        <div class="stats" id="dayStats"></div>
+      </div>
+
+      <!-- 周 / 月总结 -->
+      <div id="sumRange" class="hide">
+        <div class="stats" id="rangeStats"></div>
+        <div class="card" style="margin-top:12px">
+          <div class="card-head"><div class="card-title" id="rangeChartTitle">趋势</div><div class="card-sub">折线</div></div>
+          <canvas id="chart2" height="360" style="width:100%;height:180px"></canvas>
+        </div>
+        <div class="sec-label">热力图 · 饮水达标</div>
+        <div class="card"><div class="heat" id="heat"></div></div>
+      </div>
+    </section>
+
+    <!-- ==================== 页面：我的（数据 / 模板入口） ==================== -->
+    <section id="pg-me" class="hide">
+      <div class="sec-label">管理</div>
+      <div class="card">
+        <div class="list-row">
+          <div class="mini-ico" style="background:var(--brand-soft)">📦</div>
+          <div class="lr-main"><div class="lr-name">模板管理</div><div class="lr-sub" id="meTplSub">—</div></div>
+          <button class="btn-sm" data-act="openTemplates">管理</button>
+        </div>
+        <div class="list-row">
+          <div class="mini-ico" style="background:var(--water-soft)">💧</div>
+          <div class="lr-main"><div class="lr-name">快捷按钮</div><div class="lr-sub" id="meQuickSub">—</div></div>
+          <button class="btn-sm" data-act="openQuick">管理</button>
+        </div>
+        <div class="list-row">
+          <div class="mini-ico" style="background:var(--steps-soft)">🎯</div>
+          <div class="lr-main"><div class="lr-name">每日目标</div><div class="lr-sub" id="meGoalSub">—</div></div>
+          <button class="btn-sm" data-act="openGoals">修改</button>
+        </div>
+      </div>
+
+      <div class="sec-label">应用</div>
+      <div class="card" id="installRow">
+        <div class="list-row">
+          <div class="mini-ico" style="background:var(--brand-soft)">📲</div>
+          <div class="lr-main">
+            <div class="lr-name">添加到桌面</div>
+            <div class="lr-sub" id="meInstallSub">装到桌面后可以全屏打开、离线也能用</div>
+          </div>
+          <button class="btn-sm" id="btnInstall">查看</button>
+        </div>
+      </div>
+
+      <div class="sec-label">数据</div>
+      <div class="card">
+        <div class="list-row">
+          <div class="mini-ico" style="background:var(--sleep-soft)">💾</div>
+          <div class="lr-main"><div class="lr-name">备份 / 导出 JSON</div><div class="lr-sub">含全部记录、模板、设置</div></div>
+          <button class="btn-sm" data-act="exportJson">导出</button>
+        </div>
+        <div class="list-row">
+          <div class="mini-ico" style="background:var(--food-soft)">📊</div>
+          <div class="lr-main"><div class="lr-name">导出 CSV</div><div class="lr-sub">可用 Excel 打开</div></div>
+          <button class="btn-sm" data-act="exportCsv">导出</button>
+        </div>
+        <div class="list-row">
+          <div class="mini-ico" style="background:var(--med-soft)">📥</div>
+          <div class="lr-main"><div class="lr-name">导入 JSON</div><div class="lr-sub">导入前自动存一份当前数据</div></div>
+          <button class="btn-sm" data-act="importJson">导入</button>
+        </div>
+        <div class="list-row">
+          <div class="mini-ico" style="background:var(--card2)">🧹</div>
+          <div class="lr-main"><div class="lr-name" style="color:var(--danger)">清空所有数据</div><div class="lr-sub">不可恢复，请先导出备份</div></div>
+          <button class="btn-sm" style="color:var(--danger);border-color:var(--danger)" data-act="clearAll">清空</button>
+        </div>
+      </div>
+
+      <div class="sec-label">偏好</div>
+      <div class="card">
+        <div class="list-row">
+          <div class="lr-main"><div class="lr-name">主题</div><div class="lr-sub">浅色 / 深色 / 跟随系统</div></div>
+          <select id="setTheme" style="width:112px;padding:8px">
+            <option value="light">浅色</option><option value="dark">深色</option><option value="auto">跟随系统</option>
+          </select>
+        </div>
+        <div class="list-row">
+          <div class="lr-main"><div class="lr-name">体重单位</div><div class="lr-sub">内部统一按 kg 存储</div></div>
+          <select id="setUnit" style="width:112px;padding:8px">
+            <option value="kg">kg</option><option value="jin">斤</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card" style="text-align:center;color:var(--text3);font-size:12px">
+        健康记录 · 单文件原型 v0.1.0<br>
+        <span style="font-size:11px">数据保存在本机浏览器，不上传任何服务器</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== 底部导航 ==================== -->
+  <nav>
+    <div class="nav-in">
+      <button class="nav-btn on" data-page="home"><i>🏠</i>主页</button>
+      <div class="fab-wrap"><button class="fab" id="btnAdd">＋</button></div>
+      <button class="nav-btn" data-page="summary"><i>📈</i>总结</button>
+    </div>
+  </nav>
+  <button class="nav-btn" data-page="me"
+          style="position:fixed;right:8px;bottom:calc(64px + env(safe-area-inset-bottom));z-index:55;background:var(--card);
+                 border:1px solid var(--line);border-radius:14px;width:52px;height:52px;box-shadow:var(--shadow);color:var(--text2)">
+    <i>👤</i>我的
+  </button>
+
+  <!-- ==================== 面板：添加 ==================== -->
+  <div class="sheet hide" id="sheetAdd">
+    <div class="sheet-mask" data-close></div>
+    <div class="sheet-panel">
+      <div class="grip"></div>
+      <h3 class="sheet-title">添加记录 <button class="btn-sm" data-close>取消</button></h3>
+
+      <div class="types" id="typeBtns"></div>
+
+      <!-- 自然语言输入 -->
+      <label class="f">说一句 / 输一句（自然语言解析）</label>
+      <div class="row">
+        <input id="nlInput" placeholder="例如：200ml温水 / 8900步 / 早餐 燕麦粥" autocomplete="off"
+               style="flex:1">
+        <button class="btn-sm" id="btnVoice" style="flex:0 0 auto;padding:11px 13px" title="语音输入">🎙️</button>
+      </div>
+      <div class="hint">支持：200ml温水 · 8900步 · 跑了30分钟 · 体重65.2kg · 吃了碗面 · 备注xxx</div>
+      <div id="nlParsed"></div>
+
+      <!-- 模板 -->
+      <label class="f">模板 / 常用（一键填入）</label>
+      <div class="group-tabs" id="tplGroupTabs"></div>
+      <div class="chips" id="tplChips"></div>
+
+      <!-- 表单 -->
+      <label class="f">名称 / 内容</label>
+      <input id="fName" placeholder="例如：温水、燕麦粥、慢跑" autocomplete="off">
+
+      <div class="row">
+        <div>
+          <label class="f" id="fAmountLabel">数量</label>
+          <input id="fAmount" type="number" inputmode="decimal" placeholder="0" step="any">
+        </div>
+        <div>
+          <label class="f">单位</label>
+          <select id="fUnit"></select>
+        </div>
+      </div>
+
+      <label class="f">时间（默认现在，可改）</label>
+      <input id="fTime" type="time">
+      <label class="f" id="fDateLabel" style="display:none">日期</label>
+      <input id="fDate" type="date" style="display:none">
+
+      <label class="f">备注（可选）</label>
+      <input id="fNote" placeholder="补充说明" autocomplete="off">
+
+      <button class="btn" id="btnSave">保存并回到主页</button>
+    </div>
+  </div>
+
+  <!-- ==================== 面板：设置 ==================== -->
+  <div class="sheet hide" id="sheetSettings">
+    <div class="sheet-mask" data-close></div>
+    <div class="sheet-panel">
+      <div class="grip"></div>
+      <h3 class="sheet-title">快速设置 <button class="btn-sm" data-close>关闭</button></h3>
+      <div class="list-row">
+        <div class="lr-main"><div class="lr-name">主题</div></div>
+        <select id="setTheme2" style="width:130px;padding:9px">
+          <option value="light">浅色</option><option value="dark">深色</option><option value="auto">跟随系统</option>
+        </select>
+      </div>
+      <div class="list-row">
+        <div class="lr-main"><div class="lr-name">天气</div></div>
+        <select id="setWx2" style="width:130px;padding:9px">
+          <option value="sun">☀️ 晴</option><option value="cloud">⛅ 多云</option>
+          <option value="overcast">☁️ 阴</option><option value="rain">🌧️ 雨</option>
+          <option value="snow">❄️ 雪</option><option value="none">不显示</option>
+        </select>
+      </div>
+      <div class="hint" style="margin-top:12px">
+        GPS 自动获取天气、背景图、提醒、云同步属于第二版。<br>
+        完整设置项在「我的」页面。
+      </div>
+      <button class="btn ghost" data-close style="margin-top:16px">完成</button>
+    </div>
+  </div>
+
+  <!-- ==================== 面板：每日目标 ==================== -->
+  <div class="sheet hide" id="sheetGoals">
+    <div class="sheet-mask" data-close></div>
+    <div class="sheet-panel">
+      <div class="grip"></div>
+      <h3 class="sheet-title">每日目标 <button class="btn-sm" data-close>关闭</button></h3>
+      <div class="hint" style="margin-bottom:10px">目标按天快照保存：修改后只影响今天及以后，历史达标率不会被改写。</div>
+      <div class="list-row">
+        <div class="lr-main"><div class="lr-name">💧 饮水</div></div>
+        <div class="stepper" data-goal="water"><button data-d="-100">−</button><span></span><button data-d="100">+</button></div>
+      </div>
+      <div class="list-row">
+        <div class="lr-main"><div class="lr-name">🚶 步数</div></div>
+        <div class="stepper" data-goal="steps"><button data-d="-500">−</button><span></span><button data-d="500">+</button></div>
+      </div>
+      <div class="list-row">
+        <div class="lr-main"><div class="lr-name">😴 睡眠（小时）</div></div>
+        <div class="stepper" data-goal="sleep"><button data-d="-0.5">−</button><span></span><button data-d="0.5">+</button></div>
+      </div>
+      <div class="list-row">
+        <div class="lr-main"><div class="lr-name">⚖️ 体重目标（kg）</div><div class="lr-sub">仅作趋势参考</div></div>
+        <div class="stepper" data-goal="weight"><button data-d="-0.5">−</button><span></span><button data-d="0.5">+</button></div>
+      </div>
+      <button class="btn" data-close>完成</button>
+    </div>
+  </div>
+
+  <!-- ==================== 面板：快捷按钮管理 ==================== -->
+  <div class="sheet hide" id="sheetQuick">
+    <div class="sheet-mask" data-close></div>
+    <div class="sheet-panel">
+      <div class="grip"></div>
+      <h3 class="sheet-title">快捷按钮管理 <button class="btn-sm" data-close>关闭</button></h3>
+      <div class="hint" style="margin-bottom:8px">快捷按钮本质是「置顶的饮水模板」，增删改名改容量都在这里，首页只显示前 6 个。</div>
+      <div id="quickManage"></div>
+      <button class="btn" id="btnQuickAdd">＋ 新增快捷按钮</button>
+    </div>
+  </div>
+
+  <!-- ==================== 面板：模板管理 ==================== -->
+  <div class="sheet hide" id="sheetTemplates">
+    <div class="sheet-mask" data-close></div>
+    <div class="sheet-panel">
+      <div class="grip"></div>
+      <h3 class="sheet-title">模板管理 <button class="btn-sm" data-close>关闭</button></h3>
+      <div class="group-tabs" id="mTplGroupTabs"></div>
+      <div id="tplManage"></div>
+      <button class="btn" id="btnTplAdd">＋ 新增模板</button>
+    </div>
+  </div>
+
+  <input type="file" id="fileImport" accept=".json,application/json" class="hide">
+  <div id="toast"></div>
+</div>
+</body>
+</html>
