@@ -19,7 +19,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="健康记录">
 <title>健康记录</title>
-  <script type="module" crossorigin src="/health-record/assets/index-e7CYVYBp.js"></script>
+  <script type="module" crossorigin src="/health-record/assets/index-Bnvmpnu-.js"></script>
   <link rel="stylesheet" crossorigin href="/health-record/assets/index-F1rqg7vy.css">
 <link rel="manifest" href="/health-record/manifest.webmanifest"></head>
 <body>
@@ -365,7 +365,7 @@
     <div class="sheet-mask" data-close></div>
     <div class="sheet-panel">
       <div class="grip"></div>
-      <h3 class="sheet-title">添加记录 <button class="btn-sm" data-close>取消</button></h3>
+      <h3 class="sheet-title"><span id="sheetAddTitle">添加记录</span> <button class="btn-sm" data-close>取消</button></h3>
 
       <div class="types" id="typeBtns"></div>
 
@@ -455,6 +455,7 @@
       <input id="fNote" placeholder="补充说明" autocomplete="off">
 
       <button class="btn" id="btnSave">保存并回到主页</button>
+      <button class="btn-sm" id="btnEditToTemplate" style="display:none;width:100%;margin-top:9px;padding:11px">存为模板（下次一键添加）</button>
     </div>
   </div>
 
