@@ -19,7 +19,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="健康记录">
 <title>健康记录</title>
-  <script type="module" crossorigin src="/health-record/assets/index-BhOf4JZi.js"></script>
+  <script type="module" crossorigin src="/health-record/assets/index-BqCgRRu1.js"></script>
   <link rel="stylesheet" crossorigin href="/health-record/assets/index-D-U8PG2L.css">
 <link rel="manifest" href="/health-record/manifest.webmanifest"></head>
 <body>
@@ -58,13 +58,13 @@
             </svg>
             <div class="ring-txt"><b id="ringVal">0</b><span id="ringUnit">/ 2000 ml</span></div>
           </div>
-          <div style="font-size:11px;color:var(--text3)">饮水 · 今日</div>
+          <div style="font-size:11px;color:var(--text3)" id="waterLabel">饮水 · 今日</div>
         </div>
         <div class="hero-side">
           <div class="mini">
             <div class="mini-ico" style="background:var(--steps-soft)">🚶</div>
             <div class="mini-body">
-              <div class="mini-label">运动 · 步数</div>
+              <div class="mini-label" id="stepsLabel">运动 · 步数</div>
               <div class="mini-val" id="mvSteps">0 <small>/ 8000 步</small></div>
               <div class="bar"><i id="barSteps" style="width:0;background:var(--steps)"></i></div>
             </div>
@@ -72,7 +72,7 @@
           <div class="mini">
             <div class="mini-ico" style="background:var(--sleep-soft)">😴</div>
             <div class="mini-body">
-              <div class="mini-label">睡眠 · 昨晚 / 今日</div>
+              <div class="mini-label" id="sleepLabel">睡眠 · 昨晚 / 今日</div>
               <div class="mini-val" id="mvSleep">— <small>/ 8 小时</small></div>
               <div class="bar"><i id="barSleep" style="width:0;background:var(--sleep)"></i></div>
             </div>
@@ -80,7 +80,7 @@
           <div class="mini">
             <div class="mini-ico" style="background:var(--brand-soft)">⚖️</div>
             <div class="mini-body">
-              <div class="mini-label">体重 · 今日</div>
+              <div class="mini-label" id="weightLabel">体重 · 今日</div>
               <div class="mini-val" id="mvWeight">—</div>
             </div>
           </div>
@@ -99,7 +99,7 @@
 
       <!-- 今日时间轴 -->
       <div class="sec-label" style="display:flex;align-items:center">
-        <span>今日记录</span>
+        <span id="tlLabel">今日记录</span>
         <span style="margin-left:auto;font-weight:500" id="tlCount"></span>
       </div>
       <div class="tl" id="timeline"></div>
