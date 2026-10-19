@@ -19,8 +19,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="健康记录">
 <title>健康记录</title>
-  <script type="module" crossorigin src="/health-record/assets/index-GUvvhe--.js"></script>
-  <link rel="stylesheet" crossorigin href="/health-record/assets/index-y-nzOch4.css">
+  <script type="module" crossorigin src="/health-record/assets/index-Do9lIkTS.js"></script>
+  <link rel="stylesheet" crossorigin href="/health-record/assets/index-Dpcp62hE.css">
 <link rel="manifest" href="/health-record/manifest.webmanifest"></head>
 <body>
 <div class="phone">
@@ -159,6 +159,21 @@
       </div>
     </section>
 
+    <!-- ==================== 页面：书单 ==================== -->
+    <section id="pg-books" class="hide">
+      <div class="sec-label" style="display:flex;align-items:center">
+        <span>正在阅读</span>
+        <span style="margin-left:auto;font-weight:500" id="booksReadingCount"></span>
+      </div>
+      <div id="booksReading"></div>
+
+      <div class="sec-label" style="display:flex;align-items:center">
+        <span>已读书单</span>
+        <span style="margin-left:auto;font-weight:500" id="booksFinishedCount"></span>
+      </div>
+      <div id="booksFinished"></div>
+    </section>
+
     <!-- ==================== 页面：我的（数据 / 模板入口） ==================== -->
     <section id="pg-me" class="hide">
       <div class="sec-label">管理</div>
@@ -256,15 +271,12 @@
   <nav>
     <div class="nav-in">
       <button class="nav-btn on" data-page="home"><i>🏠</i>主页</button>
+      <button class="nav-btn" data-page="books"><i>📖</i>书单</button>
       <div class="fab-wrap"><button class="fab" id="btnAdd">＋</button></div>
       <button class="nav-btn" data-page="summary"><i>📈</i>总结</button>
+      <button class="nav-btn" data-page="me"><i>👤</i>我的</button>
     </div>
   </nav>
-  <button class="nav-btn" data-page="me"
-          style="position:fixed;right:8px;bottom:calc(64px + env(safe-area-inset-bottom));z-index:55;background:var(--card);
-                 border:1px solid var(--line);border-radius:14px;width:52px;height:52px;box-shadow:var(--shadow);color:var(--text2)">
-    <i>👤</i>我的
-  </button>
 
   <!-- ==================== 面板：添加 ==================== -->
   <div class="sheet hide" id="sheetAdd">
@@ -309,6 +321,52 @@
       <input id="fTime" type="time">
       <label class="f" id="fDateLabel" style="display:none">日期</label>
       <input id="fDate" type="date" style="display:none">
+
+      <!-- 睡眠专用：用起止时间表达，时长自动算 -->
+      <div id="sleepRangeBlock" style="display:none">
+        <div class="row">
+          <div>
+            <label class="f">入睡时间</label>
+            <input id="fSleepStart" type="time">
+          </div>
+          <div>
+            <label class="f">起床时间</label>
+            <input id="fSleepEnd" type="time">
+          </div>
+        </div>
+        <div class="hint" id="sleepDurationHint" style="margin-top:8px;color:var(--sleep);font-weight:600">请填写起止时间</div>
+      </div>
+
+      <!-- 阅读专用：书名用上面的「名称」字段，这里补作者与起止 -->
+      <div id="readingBlock" style="display:none">
+        <div class="row">
+          <div>
+            <label class="f">作者</label>
+            <input id="fAuthor" placeholder="作者名" autocomplete="off">
+          </div>
+          <div>
+            <label class="f">作者国籍</label>
+            <input id="fAuthorCountry" placeholder="如 中国" autocomplete="off">
+          </div>
+        </div>
+        <label class="f">本次阅读时长（分钟）</label>
+        <input id="fReadMinutes" type="number" inputmode="numeric" placeholder="例如 30，可不填" min="0">
+        <div class="hint">不填时长 = 开始阅读；填了 = 一次打卡；勾选下方 = 完成本次阅读。</div>
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label class="f">开始日期</label>
+            <input id="fReadStart" type="date">
+          </div>
+          <div>
+            <label class="f">完成日期</label>
+            <input id="fReadEnd" type="date" disabled>
+          </div>
+        </div>
+        <label class="f" style="display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--text)">
+          <input id="fReadFinished" type="checkbox" style="width:auto;margin:0">
+          已读完这本书（记录本次阅读的完成时间）
+        </label>
+      </div>
 
       <label class="f">备注（可选）</label>
       <input id="fNote" placeholder="补充说明" autocomplete="off">
