@@ -37,11 +37,13 @@
                 首次读完 ${c} · 阅读 ${o.timesFinished} 次 · 累计 ${Ie(o.totalMinutes)}
               </div>
             </div>
-            <button class="btn-sm book-del" data-book-del="${o.book.id}" title="删除这本书">删</button>
           </div>
-          <button class="book-fold ${h}" data-book-fold="${o.book.id}">
-            <span class="arrow">▶</span> ${o.timesFinished>1?`${o.timesFinished} 次阅读明细`:"阅读明细"}
-          </button>
+          <div class="book-foot">
+            <button class="book-fold ${h}" data-book-fold="${o.book.id}">
+              <span class="arrow">▶</span> ${o.timesFinished>1?`${o.timesFinished} 次阅读明细`:"阅读明细"}
+            </button>
+            <button class="book-del-text" data-book-del="${o.book.id}">删除</button>
+          </div>
           ${this.expandedBooks?.has(o.book.id)?`<div class="book-rounds">${f}</div>`:""}
           ${o.currentRound?`<div class="book-progress" style="border-top:0;padding-top:6px;margin-top:6px">正在读第 ${o.currentRound.roundNo} 次 · 已累计 <b>${Ie(o.currentMinutes)}</b></div>`:""}
         </div>`}).join(""):'<div class="book-empty">还没有读完的书<br>读完一本就会出现在这里</div>',this.bindBookActions()},bookAuthorLine(r){const a=r.authorCountry?`【${Ee(r.authorCountry)}】`:"",o=r.author?Ee(r.author):"佚名";return`${a}${o}`},bindBookActions(){document.querySelectorAll("[data-book-log]").forEach(r=>{r.onclick=()=>this.openReadingLog(r.dataset.bookLog)}),document.querySelectorAll("[data-book-finish]").forEach(r=>{r.onclick=()=>this.finishBook(r.dataset.bookFinish)}),document.querySelectorAll("[data-book-fold]").forEach(r=>{r.onclick=()=>{const a=r.dataset.bookFold;this.expandedBooks=this.expandedBooks||new Set,this.expandedBooks.has(a)?this.expandedBooks.delete(a):this.expandedBooks.add(a),this.renderBooks()}}),document.querySelectorAll("[data-book-del]").forEach(r=>{r.onclick=()=>this.removeBook(r.dataset.bookDel)})},async openReadingLog(r){const{reading:a}=await $r(),o=a.find(M=>M.book.id===r);if(!o){this.toast("这本书当前没有进行中的阅读");return}const c=await Ra(r),f=o.book,h=document.createElement("div");h.className="read-log-mask",h.innerHTML=`
