@@ -37,7 +37,7 @@
                 首次读完 ${c} · 阅读 ${o.timesFinished} 次 · 累计 ${Ie(o.totalMinutes)}
               </div>
             </div>
-            <button class="btn-sm" data-book-del="${o.book.id}" style="color:var(--danger)">删</button>
+            <button class="btn-sm book-del" data-book-del="${o.book.id}" title="删除这本书">删</button>
           </div>
           <button class="book-fold ${h}" data-book-fold="${o.book.id}">
             <span class="arrow">▶</span> ${o.timesFinished>1?`${o.timesFinished} 次阅读明细`:"阅读明细"}
