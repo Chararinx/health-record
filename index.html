@@ -19,7 +19,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="健康记录">
 <title>健康记录</title>
-  <script type="module" crossorigin src="/health-record/assets/index-Bnvmpnu-.js"></script>
+  <script type="module" crossorigin src="/health-record/assets/index-B2LrE_fj.js"></script>
   <link rel="stylesheet" crossorigin href="/health-record/assets/index-F1rqg7vy.css">
 <link rel="manifest" href="/health-record/manifest.webmanifest"></head>
 <body>
@@ -268,6 +268,19 @@
       </div>
 
 <div class="sec-label">数据</div>
+      <div class="card" id="syncCard">
+        <div class="list-row" style="border:0">
+          <div class="mini-ico" style="background:var(--brand-soft)">🔄</div>
+          <div class="lr-main">
+            <div class="lr-name">跨设备同步</div>
+            <div class="lr-sub" id="syncSub">生成一串同步码，在另一台设备粘贴即可合并</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:9px;padding:0 4px 4px">
+          <button class="btn-sm" id="btnMakeCode" style="flex:1;padding:10px">生成同步码</button>
+          <button class="btn-sm" id="btnUseCode" style="flex:1;padding:10px">用同步码导入</button>
+        </div>
+      </div>
       <div class="card" id="safetyCard">
         <div class="list-row">
           <div class="mini-ico" style="background:var(--brand-soft)">🛡️</div>
