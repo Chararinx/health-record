@@ -115,6 +115,20 @@
 
       <!-- 日总结 -->
       <div id="sumDay">
+        <div class="card" id="sumDateNav" style="padding:9px 12px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn-sm" id="sumPrev" style="flex:0 0 auto;width:38px;padding:9px 0;font-size:16px">‹</button>
+            <label for="sumDate" style="flex:1;text-align:center;cursor:pointer;position:relative;padding:2px 0">
+              <div style="font-size:14px;font-weight:650" id="sumDateTitle">—</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="sumDateHint"></div>
+              <input id="sumDate" type="date"
+                     style="position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;cursor:pointer">
+            </label>
+            <button class="btn-sm" id="sumNext" style="flex:0 0 auto;width:38px;padding:9px 0;font-size:16px">›</button>
+          </div>
+        </div>
+
+
         <div class="card">
           <div class="card-head">
             <div class="card-title">📝 标准格式总结</div>
@@ -130,19 +144,6 @@
                 <div class="card">
           <div class="card-head"><div class="card-title">🎯 目标达成</div><div class="card-sub">改目标只影响今天及以后</div></div>
           <div id="sumGoals"></div>
-        </div>
-
-        <div class="card" id="sumDateNav" style="margin-top:10px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <button class="btn-sm" id="sumPrev" style="flex:0 0 auto;width:38px;padding:9px 0;font-size:16px">‹</button>
-            <label for="sumDate" style="flex:1;text-align:center;cursor:pointer;position:relative;padding:2px 0">
-              <div style="font-size:14px;font-weight:650" id="sumDateTitle">—</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="sumDateHint"></div>
-              <input id="sumDate" type="date"
-                     style="position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;cursor:pointer">
-            </label>
-            <button class="btn-sm" id="sumNext" style="flex:0 0 auto;width:38px;padding:9px 0;font-size:16px">›</button>
-          </div>
         </div>
 
 <div class="type-tabs" id="chartTabs">
