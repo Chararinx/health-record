@@ -19,8 +19,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="健康记录">
 <title>健康记录</title>
-  <script type="module" crossorigin src="/health-record/assets/index-BqCgRRu1.js"></script>
-  <link rel="stylesheet" crossorigin href="/health-record/assets/index-D-U8PG2L.css">
+  <script type="module" crossorigin src="/health-record/assets/index-CtiXbVH4.js"></script>
+  <link rel="stylesheet" crossorigin href="/health-record/assets/index-Ce8SkLR0.css">
 <link rel="manifest" href="/health-record/manifest.webmanifest"></head>
 <body>
 <div class="phone">
@@ -93,7 +93,10 @@
           <div class="card-title">💧 一键记录饮水</div>
           <div class="card-sub">点一下直接累计</div>
         </div>
-        <div class="quick" id="quickBtns"></div>
+        <div class="quick-scroll" id="quickScroll">
+          <div class="quick" id="quickBtns"></div>
+        </div>
+        <div class="quick-hint" id="quickHint"></div>
         <div class="hint">在「设置 → 快捷按钮」可增删、改名、改容量、排序</div>
       </div>
 
@@ -263,6 +266,10 @@
           <button class="btn-sm" id="btnBackupNow" data-act="backupNow">立即备份</button>
         </div>
         <div class="hint" id="safetyHint" style="margin:0 0 4px"></div>
+        <div id="quotaWrap" style="display:none;margin-top:6px">
+          <div class="quota-bar"><div class="quota-fill" id="quotaFill"></div></div>
+          <div class="hint" id="quotaText" style="margin:0"></div>
+        </div>
       </div>
 
 
@@ -481,7 +488,7 @@
     <div class="sheet-panel">
       <div class="grip"></div>
       <h3 class="sheet-title">快捷按钮管理 <button class="btn-sm" data-close>关闭</button></h3>
-      <div class="hint" style="margin-bottom:8px">快捷按钮本质是「置顶的饮水模板」，增删改名改容量都在这里，首页只显示前 6 个。</div>
+      <div class="hint" style="margin-bottom:8px">快捷按钮本质是「置顶的模板」，增删改名改容量都在这里。首页按类型分模块、可左右滑动查看全部。</div>
       <div id="quickManage"></div>
       <button class="btn" id="btnQuickAdd">＋ 新增快捷按钮</button>
     </div>
